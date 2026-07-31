@@ -6,7 +6,7 @@
   <title>Demonlist Felix</title>
 
   <!-- CSS renombrado para evitar caché -->
-  <link rel="stylesheet" href="styles-new.css?v=2">
+  <link rel="stylesheet" href="styles-new.css?v=3">
 </head>
 
 <body>
@@ -35,11 +35,12 @@
   <table id="levelsTable">
     <thead>
       <tr>
-        <th>#</th>
+        <th>Posición</th>
         <th>Nivel</th>
         <th>Creador</th>
         <th>Dificultad</th>
         <th>Progreso</th>
+        <th>Jugadores</th>
         <th>Acción</th>
       </tr>
     </thead>
@@ -63,6 +64,10 @@
 
     <input type="number" id="newProgress" placeholder="Progreso (%)" min="0" max="100">
 
+    <input type="number" id="newPosition" placeholder="Posición en la lista" min="1">
+
+    <input type="text" id="newPlayers" placeholder="Personas que se lo han pasado (separadas por comas)">
+
     <button id="addBtn">Añadir</button>
   </section>
 
@@ -75,7 +80,7 @@
   <p>Creado por Felix — Geometry Dash</p>
 </footer>
 
-<script src="script.js?v=2"></script>
+<script src="script.js?v=3"></script>
 
 </body>
 </html>
