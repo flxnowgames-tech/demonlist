@@ -1,48 +1,73 @@
 <!DOCTYPE html>
 <html lang="es">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demonlist Personal</title>
+  <meta charset="UTF-8" />
+  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+  <title>Demonlist Felix</title>
   <link rel="stylesheet" href="styles.css">
 </head>
+
 <body>
 
-  <header>
-    <h1>Demonlist Herrera</h1>
-    <p>Tu progreso en Geometry Dash</p>
-  </header>
+<header>
+  <h1>Demonlist Felix</h1>
+  <p>Tu progreso en Geometry Dash con diseño sci‑fi, iconos, ranking y animaciones.</p>
+</header>
 
-  <main>
-    <section class="controls">
-      <input type="text" id="search" placeholder="Buscar nivel...">
-      <select id="difficultyFilter">
-        <option value="">Todas las dificultades</option>
-        <option value="Easy Demon">Easy Demon</option>
-        <option value="Medium Demon">Medium Demon</option>
-        <option value="Hard Demon">Hard Demon</option>
-        <option value="Insane Demon">Insane Demon</option>
-        <option value="Extreme Demon">Extreme Demon</option>
-      </select>
-    </section>
+<main>
 
-    <table id="levelsTable">
-      <thead>
-        <tr>
-          <th>Nivel</th>
-          <th>Creador</th>
-          <th>Dificultad</th>
-          <th>Progreso</th>
-        </tr>
-      </thead>
-      <tbody></tbody>
-    </table>
-  </main>
+  <!-- CONTROLES -->
+  <section class="controls">
+    <input type="text" id="search" placeholder="Buscar nivel...">
+    <select id="difficultyFilter">
+      <option value="">Todas las dificultades</option>
+      <option value="Easy Demon">Easy Demon</option>
+      <option value="Medium Demon">Medium Demon</option>
+      <option value="Hard Demon">Hard Demon</option>
+      <option value="Insane Demon">Insane Demon</option>
+      <option value="Extreme Demon">Extreme Demon</option>
+    </select>
+  </section>
 
-  <footer>
-    <p>Creado por Felix — Geometry Dash</p>
-  </footer>
+  <!-- TABLA -->
+  <table id="levelsTable">
+    <thead>
+      <tr>
+        <th>#</th>
+        <th>Nivel</th>
+        <th>Creador</th>
+        <th>Dificultad</th>
+        <th>Progreso</th>
+        <th>Acción</th>
+      </tr>
+    </thead>
+    <tbody></tbody>
+  </table>
 
-  <script src="script.js"></script>
+  <!-- AÑADIR NIVEL -->
+  <section class="add-level">
+    <h2>Añadir nivel</h2>
+    <input type="text" id="newName" placeholder="Nombre del nivel">
+    <input type="text" id="newCreator" placeholder="Creador">
+    <select id="newDifficulty">
+      <option value="Easy Demon">Easy Demon</option>
+      <option value="Medium Demon">Medium Demon</option>
+      <option value="Hard Demon">Hard Demon</option>
+      <option value="Insane Demon">Insane Demon</option>
+      <option value="Extreme Demon">Extreme Demon</option>
+    </select>
+    <input type="number" id="newProgress" placeholder="Progreso (%)" min="0" max="100">
+    <button id="addBtn">Añadir</button>
+  </section>
+
+  <button id="exportBtn" class="export">Exportar JSON</button>
+
+</main>
+
+<footer>
+  <p>Creado por Felix — Geometry Dash</p>
+</footer>
+
+<script src="script.js"></script>
 </body>
 </html>
