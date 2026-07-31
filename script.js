@@ -3,7 +3,7 @@ document.addEventListener("DOMContentLoaded", () => {
   let currentLevels = [];
 
   async function loadLevels() {
-    const response = await fetch("levels.json");
+    const response = await fetch("levels-new.json");
     currentLevels = await response.json();
     sortLevels();
     renderTable(currentLevels);
@@ -19,16 +19,6 @@ document.addEventListener("DOMContentLoaded", () => {
       "Hard Demon": "var(--hard)",
       "Insane Demon": "var(--insane)",
       "Extreme Demon": "var(--extreme)"
-    }[diff];
-  }
-
-  function getIcon(diff) {
-    return {
-      "Easy Demon": "https://i.imgur.com/4ZQZ4Zy.png",
-      "Medium Demon": "https://i.imgur.com/8fQJz8D.png",
-      "Hard Demon": "https://i.imgur.com/1tqfV6G.png",
-      "Insane Demon": "https://i.imgur.com/8yqYg7T.png",
-      "Extreme Demon": "https://i.imgur.com/0qQX8hC.png"
     }[diff];
   }
 
@@ -55,14 +45,13 @@ document.addEventListener("DOMContentLoaded", () => {
     tbody.innerHTML = "";
 
     levels.forEach((level) => {
-      const row = document.createElement("tr");
-
       const color = getDifficultyColor(level.difficulty);
-      const icon = getIcon(level.difficulty);
+
+      const row = document.createElement("tr");
 
       row.innerHTML = `
         <td>${level.position}</td>
-        <td><img src="${icon}" class="demon-icon">${level.name}</td>
+        <td>${level.name}</td>
         <td>${level.creator}</td>
         <td style="color:${color}; font-weight:700;">${level.difficulty}</td>
         <td>
@@ -118,7 +107,7 @@ document.addEventListener("DOMContentLoaded", () => {
     const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentLevels, null, 2));
     const dl = document.createElement("a");
     dl.setAttribute("href", dataStr);
-    dl.setAttribute("download", "levels.json");
+    dl.setAttribute("download", "levels-new.json");
     dl.click();
   });
 
