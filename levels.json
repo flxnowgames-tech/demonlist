@@ -1,0 +1,20 @@
+[
+  {
+    "name": "The Golden",
+    "creator": "MindCap",
+    "difficulty": "Extreme Demon",
+    "progress": 100
+  },
+  {
+    "name": "Acropolis",
+    "creator": "Zobros",
+    "difficulty": "Insane Demon",
+    "progress": 100
+  },
+  {
+    "name": "Deadlocked",
+    "creator": "RobTop",
+    "difficulty": "Easy Demon",
+    "progress": 100
+  }
+]
