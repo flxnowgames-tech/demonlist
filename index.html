@@ -4,7 +4,9 @@
   <meta charset="UTF-8" />
   <meta name="viewport" content="width=device-width, initial-scale=1.0" />
   <title>Demonlist Felix</title>
-  <link rel="stylesheet" href="styles.css">
+
+  <!-- IMPORTANTE: cambia el nombre del CSS para evitar caché -->
+  <link rel="stylesheet" href="styles-new.css?v=1">
 </head>
 
 <body>
@@ -47,8 +49,10 @@
   <!-- AÑADIR NIVEL -->
   <section class="add-level">
     <h2>Añadir nivel</h2>
+
     <input type="text" id="newName" placeholder="Nombre del nivel">
     <input type="text" id="newCreator" placeholder="Creador">
+
     <select id="newDifficulty">
       <option value="Easy Demon">Easy Demon</option>
       <option value="Medium Demon">Medium Demon</option>
@@ -56,10 +60,13 @@
       <option value="Insane Demon">Insane Demon</option>
       <option value="Extreme Demon">Extreme Demon</option>
     </select>
+
     <input type="number" id="newProgress" placeholder="Progreso (%)" min="0" max="100">
+
     <button id="addBtn">Añadir</button>
   </section>
 
+  <!-- BOTÓN EXPORTAR -->
   <button id="exportBtn" class="export">Exportar JSON</button>
 
 </main>
@@ -68,6 +75,8 @@
   <p>Creado por Felix — Geometry Dash</p>
 </footer>
 
-<script src="script.js"></script>
+<!-- IMPORTANTE: script al final -->
+<script src="script.js?v=1"></script>
+
 </body>
 </html>
