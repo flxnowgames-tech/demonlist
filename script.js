@@ -24,10 +24,10 @@ document.addEventListener("DOMContentLoaded", () => {
 
   function getIcon(diff) {
     return {
-      "Easy Demon": "https://i.imgur.com/0qQX8hC.png",
-      "Medium Demon": "https://i.imgur.com/0qQX8hC.png",
-      "Hard Demon": "https://i.imgur.com/0qQX8hC.png",
-      "Insane Demon": "https://i.imgur.com/0qQX8hC.png",
+      "Easy Demon": "https://i.imgur.com/4ZQZ4Zy.png",
+      "Medium Demon": "https://i.imgur.com/8fQJz8D.png",
+      "Hard Demon": "https://i.imgur.com/1tqfV6G.png",
+      "Insane Demon": "https://i.imgur.com/8yqYg7T.png",
       "Extreme Demon": "https://i.imgur.com/0qQX8hC.png"
     }[diff];
   }
