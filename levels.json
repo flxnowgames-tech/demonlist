@@ -3,18 +3,24 @@
     "name": "The Golden",
     "creator": "MindCap",
     "difficulty": "Extreme Demon",
-    "progress": 100
+    "progress": 100,
+    "position": 1,
+    "players": ["Felix"]
   },
   {
     "name": "Acropolis",
     "creator": "Zobros",
     "difficulty": "Insane Demon",
-    "progress": 100
+    "progress": 100,
+    "position": 2,
+    "players": ["Felix"]
   },
   {
     "name": "Deadlocked",
     "creator": "RobTop",
     "difficulty": "Easy Demon",
-    "progress": 100
+    "progress": 100,
+    "position": 3,
+    "players": ["Felix"]
   }
 ]
