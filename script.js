@@ -2,16 +2,15 @@ document.addEventListener("DOMContentLoaded", () => {
 
   let currentLevels = [];
 
-  async function loadLevels() {
-    const response = await fetch("levels-new.json");
-    currentLevels = await response.json();
-    sortLevels();
-    renderTable(currentLevels);
+async function loadLevels() {
+  const response = await fetch("levels-new.json?v=1");
+  currentLevels = await response.json();
+  sortLevels();
+  renderTable(currentLevels);
 
-    document.getElementById("search").addEventListener("input", filter);
-    document.getElementById("difficultyFilter").addEventListener("change", filter);
-  }
-
+  document.getElementById("search").addEventListener("input", filter);
+  document.getElementById("difficultyFilter").addEventListener("change", filter);
+}
   function getDifficultyColor(diff) {
     return {
       "Easy Demon": "var(--easy)",
