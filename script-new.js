@@ -25,7 +25,7 @@ document.addEventListener("DOMContentLoaded", () => {
 // Cargar niveles desde level-new.json
 async function cargarNiveles() {
   try {
-    const response = await fetch('./level-new.json?v=' + Date.now());
+    const response = await fetch('./levels-new.json?v=' + Date.now());
     if (!response.ok) throw new Error("No se pudo cargar el archivo JSON");
     
     todosLosNiveles = await response.json();
