@@ -1,117 +1,125 @@
+// Tabla / Sistema de Tierlist de Puntos
+const PUNTOS_TIERLIST = {
+  "Extreme Demon": 100,
+  "Insane Demon": 75,
+  "Hard Demon": 50,
+  "Medium Demon": 25,
+  "Easy Demon": 10
+};
+
+// Cálculo de puntos según dificultad y % de progreso
+function calcularPuntos(dificultad, progreso) {
+  const puntosBase = PUNTOS_TIERLIST[dificultad] || 0;
+  const porcentaje = parseFloat(progreso) || 100;
+  return Math.round((porcentaje / 100) * puntosBase);
+}
+
+let todosLosNiveles = [];
+
 document.addEventListener("DOMContentLoaded", () => {
+  cargarNiveles();
+  configurarFiltros();
+  configurarFormulario();
+});
 
-  let currentLevels = [];
-
-  async function loadLevels() {
-    const response = await fetch("levels-new.json?v=1");
-    currentLevels = await response.json();
-    sortLevels();
-    renderTable(currentLevels);
-
-    document.getElementById("search").addEventListener("input", filter);
-    document.getElementById("difficultyFilter").addEventListener("change", filter);
+// Cargar niveles desde level-new.json
+async function cargarNiveles() {
+  try {
+    const response = await fetch('./level-new.json?v=' + Date.now());
+    if (!response.ok) throw new Error("No se pudo cargar el archivo JSON");
+    
+    todosLosNiveles = await response.json();
+    renderizarTabla(todosLosNiveles);
+  } catch (error) {
+    console.error("Error cargando los niveles:", error);
   }
+}
 
-  function getDifficultyColor(diff) {
-    return {
-      "Easy Demon": "var(--easy)",
-      "Medium Demon": "var(--medium)",
-      "Hard Demon": "var(--hard)",
-      "Insane Demon": "var(--insane)",
-      "Extreme Demon": "var(--extreme)"
-    }[diff];
-  }
+// Renderizar la tabla (Soporta claves en inglés y español)
+function renderizarTabla(niveles) {
+  const tbody = document.getElementById("lista-niveles");
+  if (!tbody) return;
 
-  function sortLevels() {
-    currentLevels.sort((a, b) => a.position - b.position);
-    currentLevels.forEach((lvl, i) => lvl.position = i + 1);
-  }
+  tbody.innerHTML = "";
 
-  function filter() {
-    const search = document.getElementById("search").value.toLowerCase();
-    const difficulty = document.getElementById("difficultyFilter").value;
+  niveles.forEach((nivel, index) => {
+    // Compatibilidad de nombres de propiedades (Inglés / Español)
+    const nombre = nivel.name || nivel.nombre || "Sin nombre";
+    const creador = nivel.creator || nivel.creador || "Desconocido";
+    const dificultad = nivel.difficulty || nivel.dificultad || "Easy Demon";
+    const progreso = nivel.progress !== undefined ? nivel.progress : (nivel.progreso !== undefined ? nivel.progreso : 100);
+    const posicion = nivel.position || nivel.posicion || (index + 1);
+    const jugadores = nivel.players || nivel.jugadores || [];
 
-    const filtered = currentLevels.filter(level => {
-      const matchesSearch = level.name.toLowerCase().includes(search);
-      const matchesDifficulty = difficulty === "" || level.difficulty === difficulty;
-      return matchesSearch && matchesDifficulty;
+    const puntos = nivel.puntos !== undefined 
+      ? nivel.puntos 
+      : calcularPuntos(dificultad, progreso);
+
+    const listaJugadores = Array.isArray(jugadores) ? jugadores.join(", ") : jugadores;
+    const claseBadge = dificultad.toLowerCase().replace(/\s+/g, '-');
+
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${posicion}</td>
+      <td><strong>${nombre}</strong></td>
+      <td>${creador}</td>
+      <td><span class="badge ${claseBadge}">${dificultad}</span></td>
+      <td>${progreso}%</td>
+      <td>${listaJugadores}</td>
+      <td><strong style="color: #00e5ff;">+${puntos} pts</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
+
+// Lógica de búsqueda y filtro por dificultad
+function configurarFiltros() {
+  const inputBuscar = document.getElementById("buscar");
+  const selectFiltro = document.getElementById("filtro-dificultad");
+
+  function aplicarFiltros() {
+    const textoBusqueda = inputBuscar ? inputBuscar.value.toLowerCase() : "";
+    const dificultadSeleccionada = selectFiltro ? selectFiltro.value : "todas";
+
+    const filtrados = todosLosNiveles.filter(nivel => {
+      const nombre = (nivel.name || nivel.nombre || "").toLowerCase();
+      const creador = (nivel.creator || nivel.creador || "").toLowerCase();
+      const dificultad = nivel.difficulty || nivel.dificultad || "";
+
+      const coincideTexto = nombre.includes(textoBusqueda) || creador.includes(textoBusqueda);
+      const coincideDificultad = dificultadSeleccionada === "todas" || dificultad === dificultadSeleccionada;
+
+      return coincideTexto && coincideDificultad;
     });
 
-    renderTable(filtered);
+    renderizarTabla(filtrados);
   }
 
-  function renderTable(levels) {
-    const tbody = document.querySelector("#levelsTable tbody");
-    tbody.innerHTML = "";
+  if (inputBuscar) inputBuscar.addEventListener("input", aplicarFiltros);
+  if (selectFiltro) selectFiltro.addEventListener("change", aplicarFiltros);
+}
 
-    levels.forEach((level) => {
-      const color = getDifficultyColor(level.difficulty);
+// Lógica para añadir nuevos niveles desde el formulario
+function configurarFormulario() {
+  const form = document.getElementById("form-nivel");
+  if (!form) return;
 
-      const row = document.createElement("tr");
+  form.addEventListener("submit", (e) => {
+    e.preventDefault();
 
-      row.innerHTML = `
-        <td>${level.position}</td>
-        <td>${level.name}</td>
-        <td>${level.creator}</td>
-        <td style="color:${color}; font-weight:700;">${level.difficulty}</td>
-        <td>
-          ${level.progress}% 
-          <div class="progress-bar">
-            <div class="progress-fill" style="width:${level.progress}%; background:${color};"></div>
-          </div>
-        </td>
-        <td>${level.players.join(", ")}</td>
-        <td><button onclick="deleteLevel(${level.position - 1})">Eliminar</button></td>
-      `;
-
-      tbody.appendChild(row);
-    });
-  }
-
-  window.deleteLevel = function(index) {
-    currentLevels.splice(index, 1);
-    sortLevels();
-    renderTable(currentLevels);
-  }
-
-  document.getElementById("addBtn").addEventListener("click", () => {
-    const name = document.getElementById("newName").value;
-    const creator = document.getElementById("newCreator").value;
-    const difficulty = document.getElementById("newDifficulty").value;
-    const progress = parseInt(document.getElementById("newProgress").value);
-    const position = parseInt(document.getElementById("newPosition").value);
-    const players = document.getElementById("newPlayers").value.split(",").map(p => p.trim());
-
-    if (!name || !creator || isNaN(progress) || isNaN(position)) {
-      alert("Rellena todos los campos.");
-      return;
-    }
-
-    const newLevel = { 
-      name, 
-      creator, 
-      difficulty, 
-      progress,
-      position,
-      players
+    const nuevoNivel = {
+      name: document.getElementById("nombre").value,
+      creator: document.getElementById("creador").value,
+      difficulty: document.getElementById("dificultad").value,
+      progress: parseInt(document.getElementById("progreso").value) || 100,
+      position: parseInt(document.getElementById("posicion").value) || (todosLosNiveles.length + 1),
+      players: document.getElementById("jugadores").value.split(",").map(j => j.trim()).filter(j => j !== "")
     };
 
-    currentLevels.splice(position - 1, 0, newLevel);
-    sortLevels();
-    renderTable(currentLevels);
-
-    alert("Nivel añadido. Exporta el JSON para guardarlo permanentemente.");
+    todosLosNiveles.push(nuevoNivel);
+    todosLosNiveles.sort((a, b) => (a.position || a.posicion) - (b.position || b.posicion));
+    renderizarTabla(todosLosNiveles);
+    form.reset();
   });
-
-  document.getElementById("exportBtn").addEventListener("click", () => {
-    const dataStr = "data:text/json;charset=utf-8," + encodeURIComponent(JSON.stringify(currentLevels, null, 2));
-    const dl = document.createElement("a");
-    dl.setAttribute("href", dataStr);
-    dl.setAttribute("download", "levels-new.json");
-    dl.click();
-  });
-
-  loadLevels();
-
-});
+}
 
