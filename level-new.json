@@ -1,10 +1,20 @@
 [
   {
+    "name": "Bloodbath",
+    "creator": "Riot",
+    "difficulty": "Extreme Demon",
+    "progress": 100,
+    "position": 1,
+    "players": [
+      "BossBrainGD"
+    ]
+  },
+  {
     "name": "Cataclysm",
     "creator": "Ggboy",
     "difficulty": "Extreme Demon",
     "progress": 100,
-    "position": 1,
+    "position": 2,
     "players": [
       "BossBrainGD"
     ]
@@ -14,18 +24,29 @@
     "creator": "OddMod",
     "difficulty": "Insane Demon",
     "progress": 100,
-    "position": 2,
+    "position": 3,
     "players": [
       "BossBrainGD"
     ]
   },
   {
     "name": "Denouement",
-    "creator": "SynactiveGD",
+    "creator": "Synactive GD",
     "difficulty": "Insane Demon",
     "progress": 100,
-    "position": 3,
+    "position": 4,
     "players": [
+      "FlxGames"
+    ]
+  },
+  {
+    "name": "Invisible Deadlocked",
+    "creator": "Krmal",
+    "difficulty": "Insane Demon",
+    "progress": 100,
+    "position": 5,
+    "players": [
+      "BossBrainGD",
       "FlxGames"
     ]
   },
@@ -34,7 +55,7 @@
     "creator": "Zobros",
     "difficulty": "Insane Demon",
     "progress": 100,
-    "position": 4,
+    "position": 6,
     "players": [
       "BossBrainGD"
     ]
@@ -44,20 +65,9 @@
     "creator": "ZenthicAlpha",
     "difficulty": "Insane Demon",
     "progress": 100,
-    "position": 5,
+    "position": 7,
     "players": [
-      "BossBrainGD",
-      "Hugillopro (57%)"
-    ]
-  },
-  {
-    "name": "N E O N",
-    "creator": "BossBrainGD",
-    "difficulty": "Insane Demon",
-    "progress": 100,
-    "position": 6,
-    "players": [
-      "Hugillopro (Verifier)"
+      "BossBrainGD"
     ]
   }
 ]
