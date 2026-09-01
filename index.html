@@ -1,61 +1,70 @@
-// Tabla / Sistema de Tierlist de Puntos
-const PUNTOS_TIERLIST = {
-  "Extreme Demon": 100,
-  "Insane Demon": 75,
-  "Hard Demon": 50,
-  "Medium Demon": 25,
-  "Easy Demon": 10
-};
+<!DOCTYPE html>
+<html lang="es">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>Demonlist Felix</title>
+  <link rel="stylesheet" href="styles-new.css?v=5">
+  <script src="script-new.js?v=1" defer></script>
+</head>
+<body>
+  <main class="container">
+    <header class="header">
+      <h1>Demonlist Felix</h1>
+      <p>Tu progreso en Geometry Dash con diseño sci-fi, ranking y animaciones.</p>
+    </header>
 
-// Función para calcular puntos de un nivel
-function calcularPuntos(dificultad, progreso) {
-  const puntosBase = PUNTOS_TIERLIST[dificultad] || 0;
-  const porcentaje = parseFloat(progreso) || 100;
-  
-  // Si tiene 100% da todos los puntos, si es un porcentaje menor da la parte proporcional
-  return Math.round((porcentaje / 100) * puntosBase);
-}
+    <section class="controls-section">
+      <input type="text" id="buscar" placeholder="Buscar nivel..." class="input-field">
+      <select id="filtro-dificultad" class="select-field">
+        <option value="todas">Todas las dificultades</option>
+        <option value="Extreme Demon">Extreme Demon</option>
+        <option value="Insane Demon">Insane Demon</option>
+        <option value="Hard Demon">Hard Demon</option>
+        <option value="Medium Demon">Medium Demon</option>
+        <option value="Easy Demon">Easy Demon</option>
+      </select>
+    </section>
 
-document.addEventListener("DOMContentLoaded", () => {
-  cargarNiveles();
-});
+    <section class="table-section">
+      <table id="tabla-niveles">
+        <thead>
+          <tr>
+            <th>Posición</th>
+            <th>Nivel</th>
+            <th>Creador</th>
+            <th>Dificultad</th>
+            <th>Progreso</th>
+            <th>Jugadores</th>
+            <th>Puntos</th>
+          </tr>
+        </thead>
+        <tbody id="lista-niveles">
+          </tbody>
+      </table>
+    </section>
 
-// Cargar niveles desde el archivo JSON
-async function cargarNiveles() {
-  try {
-    const response = await fetch('./level-new.json?v=' + Date.now());
-    if (!response.ok) throw new Error("No se pudo cargar el archivo JSON");
-    
-    const niveles = await response.json();
-    renderizarTabla(niveles);
-  } catch (error) {
-    console.error("Error cargando los niveles:", error);
-  }
-}
-
-// Renderizar la tabla con la columna de Puntos (sin botón Eliminar)
-function renderizarTabla(niveles) {
-  const tbody = document.querySelector("#tabla-niveles tbody"); // Asegúrate de ajustar el ID
-  if (!tbody) return;
-
-  tbody.innerHTML = "";
-
-  niveles.forEach((nivel, index) => {
-    // Si el JSON ya trae un valor manual de puntos usa ese, si no, lo calcula automáticamente
-    const puntos = nivel.puntos !== undefined 
-      ? nivel.puntos 
-      : calcularPuntos(nivel.dificultad, nivel.progreso);
-
-    const tr = document.createElement("tr");
-    tr.innerHTML = `
-      <td>${nivel.posicion || index + 1}</td>
-      <td><strong>${nivel.nombre}</strong></td>
-      <td>${nivel.creador}</td>
-      <td><span class="badge ${nivel.dificultad.toLowerCase().replace(/\s+/g, '-')}">${nivel.dificultad}</span></td>
-      <td>${nivel.progreso}%</td>
-      <td>${Array.isArray(nivel.jugadores) ? nivel.jugadores.join(", ") : nivel.jugadores}</td>
-      <td><strong style="color: #00e5ff;">+${puntos} pts</strong></td>
-    `;
-    tbody.appendChild(tr);
-  });
-}
+    <section class="form-section">
+      <h2>Añadir nivel</h2>
+      <form id="form-nivel">
+        <input type="text" id="nombre" placeholder="Nombre del nivel" required class="input-field">
+        <input type="text" id="creador" placeholder="Creador" required class="input-field">
+        
+        <select id="dificultad" class="select-field" required>
+          <option value="Easy Demon">Easy Demon</option>
+          <option value="Medium Demon">Medium Demon</option>
+          <option value="Hard Demon">Hard Demon</option>
+          <option value="Insane Demon">Insane Demon</option>
+          <option value="Extreme Demon">Extreme Demon</option>
+        </select>
+        
+        <input type="number" id="progreso" placeholder="Progreso (%)" min="1" max="100" required class="input-field">
+        <input type="number" id="posicion" placeholder="Posición en la lista" min="1" class="input-field">
+        <input type="text" id="jugadores" placeholder="Personas que se lo han pasado (separadas por comas)" class="input-field">
+        
+        <button type="submit" id="btn-submit" class="btn-cyan">AÑADIR</button>
+      </form>
+    </section>
+  </main>
+</body>
+</html>
