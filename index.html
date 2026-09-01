@@ -1,82 +1,61 @@
-<!DOCTYPE html>
-<html lang="es">
-<head>
-  <meta charset="UTF-8" />
-  <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-  <title>Demonlist 67</title>
+// Tabla / Sistema de Tierlist de Puntos
+const PUNTOS_TIERLIST = {
+  "Extreme Demon": 100,
+  "Insane Demon": 75,
+  "Hard Demon": 50,
+  "Medium Demon": 25,
+  "Easy Demon": 10
+};
 
-  <link rel="stylesheet" href="styles-new.css?v=5">
-</head>
+// Función para calcular puntos de un nivel
+function calcularPuntos(dificultad, progreso) {
+  const puntosBase = PUNTOS_TIERLIST[dificultad] || 0;
+  const porcentaje = parseFloat(progreso) || 100;
+  
+  // Si tiene 100% da todos los puntos, si es un porcentaje menor da la parte proporcional
+  return Math.round((porcentaje / 100) * puntosBase);
+}
 
-<body>
+document.addEventListener("DOMContentLoaded", () => {
+  cargarNiveles();
+});
 
-<header>
-  <h1>Demonlist Felix</h1>
-  <p>Tu progreso en Geometry Dash</p>
-</header>
+// Cargar niveles desde el archivo JSON
+async function cargarNiveles() {
+  try {
+    const response = await fetch('./level-new.json?v=' + Date.now());
+    if (!response.ok) throw new Error("No se pudo cargar el archivo JSON");
+    
+    const niveles = await response.json();
+    renderizarTabla(niveles);
+  } catch (error) {
+    console.error("Error cargando los niveles:", error);
+  }
+}
 
-<main>
+// Renderizar la tabla con la columna de Puntos (sin botón Eliminar)
+function renderizarTabla(niveles) {
+  const tbody = document.querySelector("#tabla-niveles tbody"); // Asegúrate de ajustar el ID
+  if (!tbody) return;
 
-  <section class="controls">
-    <input type="text" id="search" placeholder="Buscar nivel...">
-    <select id="difficultyFilter">
-      <option value="">Todas las dificultades</option>
-      <option value="Easy Demon">Easy Demon</option>
-      <option value="Medium Demon">Medium Demon</option>
-      <option value="Hard Demon">Hard Demon</option>
-      <option value="Insane Demon">Insane Demon</option>
-      <option value="Extreme Demon">Extreme Demon</option>
-    </select>
-  </section>
+  tbody.innerHTML = "";
 
-  <table id="levelsTable">
-    <thead>
-      <tr>
-        <th>Posición</th>
-        <th>Nivel</th>
-        <th>Creador</th>
-        <th>Dificultad</th>
-        <th>Progreso</th>
-        <th>Jugadores</th>
-        <th>Acción</th>
-      </tr>
-    </thead>
-    <tbody></tbody>
-  </table>
+  niveles.forEach((nivel, index) => {
+    // Si el JSON ya trae un valor manual de puntos usa ese, si no, lo calcula automáticamente
+    const puntos = nivel.puntos !== undefined 
+      ? nivel.puntos 
+      : calcularPuntos(nivel.dificultad, nivel.progreso);
 
-  <section class="add-level">
-    <h2>Añadir nivel</h2>
-
-    <input type="text" id="newName" placeholder="Nombre del nivel">
-    <input type="text" id="newCreator" placeholder="Creador">
-
-    <select id="newDifficulty">
-      <option value="Easy Demon">Easy Demon</option>
-      <option value="Medium Demon">Medium Demon</option>
-      <option value="Hard Demon">Hard Demon</option>
-      <option value="Insane Demon">Insane Demon</option>
-      <option value="Extreme Demon">Extreme Demon</option>
-    </select>
-
-    <input type="number" id="newProgress" placeholder="Progreso (%)" min="0" max="100">
-
-    <input type="number" id="newPosition" placeholder="Posición en la lista" min="1">
-
-    <input type="text" id="newPlayers" placeholder="Personas que se lo han pasado (separadas por comas)">
-
-    <button id="addBtn">Añadir</button>
-  </section>
-
-  <button id="exportBtn" class="export">Exportar JSON</button>
-
-</main>
-
-<footer>
-  <p>Creado por Felix — Geometry Dash</p>
-</footer>
-
-<script src="script-new.js?v=1"></script>
-
-
-</body>
-</html>
+    const tr = document.createElement("tr");
+    tr.innerHTML = `
+      <td>${nivel.posicion || index + 1}</td>
+      <td><strong>${nivel.nombre}</strong></td>
+      <td>${nivel.creador}</td>
+      <td><span class="badge ${nivel.dificultad.toLowerCase().replace(/\s+/g, '-')}">${nivel.dificultad}</span></td>
+      <td>${nivel.progreso}%</td>
+      <td>${Array.isArray(nivel.jugadores) ? nivel.jugadores.join(", ") : nivel.jugadores}</td>
+      <td><strong style="color: #00e5ff;">+${puntos} pts</strong></td>
+    `;
+    tbody.appendChild(tr);
+  });
+}
