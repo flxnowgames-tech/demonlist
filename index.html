@@ -8,25 +8,28 @@
   <script src="script-new.js?v=1" defer></script>
 </head>
 <body>
-  <main class="container">
+  <div class="container">
+    <!-- Encabezado -->
     <header class="header">
       <h1>Demonlist Felix</h1>
       <p>Tu progreso en Geometry Dash con diseño sci-fi, ranking y animaciones.</p>
     </header>
 
-    <section class="controls-section">
-      <input type="text" id="buscar" placeholder="Buscar nivel..." class="input-field">
-      <select id="filtro-dificultad" class="select-field">
+    <!-- Buscador y Filtro -->
+    <div class="controls">
+      <input type="text" id="buscar" placeholder="Buscar nivel...">
+      <select id="filtro-dificultad">
         <option value="todas">Todas las dificultades</option>
-        <option value="Extreme Demon">Extreme Demon</option>
-        <option value="Insane Demon">Insane Demon</option>
-        <option value="Hard Demon">Hard Demon</option>
-        <option value="Medium Demon">Medium Demon</option>
         <option value="Easy Demon">Easy Demon</option>
+        <option value="Medium Demon">Medium Demon</option>
+        <option value="Hard Demon">Hard Demon</option>
+        <option value="Insane Demon">Insane Demon</option>
+        <option value="Extreme Demon">Extreme Demon</option>
       </select>
-    </section>
+    </div>
 
-    <section class="table-section">
+    <!-- Tabla -->
+    <div class="table-container">
       <table id="tabla-niveles">
         <thead>
           <tr>
@@ -40,17 +43,19 @@
           </tr>
         </thead>
         <tbody id="lista-niveles">
-          </tbody>
+          <!-- Los datos cargan dinámicamente -->
+        </tbody>
       </table>
-    </section>
+    </div>
 
-    <section class="form-section">
+    <!-- Formulario para Añadir Nivel -->
+    <div class="form-container">
       <h2>Añadir nivel</h2>
       <form id="form-nivel">
-        <input type="text" id="nombre" placeholder="Nombre del nivel" required class="input-field">
-        <input type="text" id="creador" placeholder="Creador" required class="input-field">
+        <input type="text" id="nombre" placeholder="Nombre del nivel" required>
+        <input type="text" id="creador" placeholder="Creador" required>
         
-        <select id="dificultad" class="select-field" required>
+        <select id="dificultad" required>
           <option value="Easy Demon">Easy Demon</option>
           <option value="Medium Demon">Medium Demon</option>
           <option value="Hard Demon">Hard Demon</option>
@@ -58,13 +63,13 @@
           <option value="Extreme Demon">Extreme Demon</option>
         </select>
         
-        <input type="number" id="progreso" placeholder="Progreso (%)" min="1" max="100" required class="input-field">
-        <input type="number" id="posicion" placeholder="Posición en la lista" min="1" class="input-field">
-        <input type="text" id="jugadores" placeholder="Personas que se lo han pasado (separadas por comas)" class="input-field">
+        <input type="number" id="progreso" placeholder="Progreso (%)" min="1" max="100" required>
+        <input type="number" id="posicion" placeholder="Posición en la lista">
+        <input type="text" id="jugadores" placeholder="Personas que se lo han pasado (separadas por comas)">
         
-        <button type="submit" id="btn-submit" class="btn-cyan">AÑADIR</button>
+        <button type="submit" id="btn-submit">AÑADIR</button>
       </form>
-    </section>
-  </main>
+    </div>
+  </div>
 </body>
 </html>
