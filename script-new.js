@@ -30,7 +30,6 @@ async function cargarNiveles() {
     
     todosLosNiveles = await response.json();
     
-    // Renderizar tabla de niveles y tabla de jugadores
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
   } catch (error) {
@@ -81,7 +80,6 @@ function renderizarRankingJugadores(niveles) {
 
   const jugadoresMap = {};
 
-  // Recorrer todos los niveles y sumar los puntos de cada jugador
   niveles.forEach(nivel => {
     const dificultad = nivel.difficulty || nivel.dificultad || "Easy Demon";
     const progreso = nivel.progress !== undefined ? nivel.progress : (nivel.progreso !== undefined ? nivel.progreso : 100);
@@ -109,7 +107,6 @@ function renderizarRankingJugadores(niveles) {
     });
   });
 
-  // Convertir a Array y ordenar de MAYOR a MENOR puntos
   const rankingOrdenado = Object.values(jugadoresMap).sort((a, b) => b.puntosTotales - a.puntosTotales);
 
   tbodyJugadores.innerHTML = "";
@@ -153,7 +150,22 @@ function configurarFiltros() {
   if (selectFiltro) selectFiltro.addEventListener("change", aplicarFiltros);
 }
 
-// Formulario para añadir niveles
+// Función auxiliar para descargar el archivo JSON
+function descargarJSON(data) {
+  const jsonStr = JSON.stringify(data, null, 2);
+  const blob = new Blob([jsonStr], { type: "application/json" });
+  const url = URL.createObjectURL(blob);
+  
+  const a = document.createElement("a");
+  a.href = url;
+  a.download = "levels-new.json";
+  document.body.appendChild(a);
+  a.click();
+  document.body.removeChild(a);
+  URL.revokeObjectURL(url);
+}
+
+// Formulario para añadir nivel y exportar directamente
 function configurarFormulario() {
   const form = document.getElementById("form-nivel");
   if (!form) return;
@@ -173,9 +185,12 @@ function configurarFormulario() {
     todosLosNiveles.push(nuevoNivel);
     todosLosNiveles.sort((a, b) => (a.position || a.posicion) - (b.position || b.posicion));
     
-    // Actualizar ambas tablas
+    // Actualizar ambas tablas en pantalla
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
+    
+    // Descargar el archivo .json actualizado
+    descargarJSON(todosLosNiveles);
     
     form.reset();
   });
