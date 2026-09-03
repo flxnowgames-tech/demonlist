@@ -1,4 +1,4 @@
-// Configuración de JSONBin.io con tus claves reales
+// Configuración de JSONBin.io con tus claves
 const BIN_ID = "6a994acdf5f4af5e2964e2e4";
 const MASTER_KEY = "$2a$10$L3EwXJA5bVnItMjuEeGuiO2i0UvTltIS2YGBm7VsUVY8st/yX66lW";
 
@@ -32,7 +32,7 @@ async function cargarNiveles() {
     const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
       headers: {
         "X-Master-Key": MASTER_KEY,
-        "X-Bin-Meta": "false" // Devuelve el JSON de niveles sin metadatos
+        "X-Bin-Meta": "false"
       }
     });
 
