@@ -3,9 +3,9 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
-  <title>Demonlist 67</title>
-  <link rel="stylesheet" href="styles-new.css?v=7">
-  <script src="script-new.js?v=7" defer></script>
+  <title>Demonlist Felix</title>
+  <link rel="stylesheet" href="styles-new.css?v=8">
+  <script src="script-new.js?v=8" defer></script>
 </head>
 <body>
   <div class="container">
@@ -17,7 +17,7 @@
     <!-- Encabezado -->
     <header class="header">
       <h1>Demonlist Felix</h1>
-      <p>Tu progreso en Geometry Dash con diseño sci-fi, ranking y animaciones.</p>
+      <p>Tu progreso en Geometry Dash con diseño sci-fi, ranking y paginación.</p>
     </header>
 
     <!-- Buscador y Filtro -->
@@ -45,13 +45,23 @@
             <th>Progreso</th>
             <th>Jugadores</th>
             <th>Puntos</th>
-            <!-- La columna 'Acciones' aparecerá dinámicamente al activar Modo Edición -->
           </tr>
         </thead>
         <tbody id="lista-niveles">
           <!-- Carga dinámicamente desde JSONBin.io -->
         </tbody>
       </table>
+    </div>
+
+    <!-- 🎮 PAGINACIÓN ESTILO GEOMETRY DASH -->
+    <div class="pagination-container">
+      <button id="btn-prev" class="btn-pagina">◄</button>
+      <div class="page-selector">
+        <span>Página</span>
+        <input type="number" id="input-pagina" value="1" min="1">
+        <span id="total-paginas">/ 1</span>
+      </div>
+      <button id="btn-next" class="btn-pagina">►</button>
     </div>
 
     <!-- Tabla de Ranking de Jugadores -->
@@ -76,7 +86,6 @@
     <div class="form-container" style="margin-top: 40px;" id="seccion-formulario">
       <h2 id="titulo-form">Añadir nivel</h2>
       <form id="form-nivel">
-        <!-- Campo oculto para saber si estamos editando -->
         <input type="hidden" id="edit-index" value="-1">
 
         <input type="text" id="nombre" placeholder="Nombre del nivel" required>
