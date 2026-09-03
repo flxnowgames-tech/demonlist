@@ -20,6 +20,7 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarNiveles();
   configurarFiltros();
   configurarFormulario();
+  configurarExportarJSON();
 });
 
 // Cargar niveles desde JSON
@@ -150,22 +151,7 @@ function configurarFiltros() {
   if (selectFiltro) selectFiltro.addEventListener("change", aplicarFiltros);
 }
 
-// Función auxiliar para descargar el archivo JSON
-function descargarJSON(data) {
-  const jsonStr = JSON.stringify(data, null, 2);
-  const blob = new Blob([jsonStr], { type: "application/json" });
-  const url = URL.createObjectURL(blob);
-  
-  const a = document.createElement("a");
-  a.href = url;
-  a.download = "levels-new.json";
-  document.body.appendChild(a);
-  a.click();
-  document.body.removeChild(a);
-  URL.revokeObjectURL(url);
-}
-
-// Formulario para añadir nivel y exportar directamente
+// Formulario para añadir nivel a la tabla activa
 function configurarFormulario() {
   const form = document.getElementById("form-nivel");
   if (!form) return;
@@ -189,9 +175,26 @@ function configurarFormulario() {
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
     
-    // Descargar el archivo .json actualizado
-    descargarJSON(todosLosNiveles);
-    
     form.reset();
+  });
+}
+
+// Función independiente para exportar/descargar el JSON en cualquier momento
+function configurarExportarJSON() {
+  const btnExportar = document.getElementById("btn-exportar");
+  if (!btnExportar) return;
+
+  btnExportar.addEventListener("click", () => {
+    const jsonStr = JSON.stringify(todosLosNiveles, null, 2);
+    const blob = new Blob([jsonStr], { type: "application/json" });
+    const url = URL.createObjectURL(blob);
+    
+    const a = document.createElement("a");
+    a.href = url;
+    a.download = "levels-new.json";
+    document.body.appendChild(a);
+    a.click();
+    document.body.removeChild(a);
+    URL.revokeObjectURL(url);
   });
 }
