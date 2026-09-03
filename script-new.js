@@ -181,7 +181,7 @@ function configurarFiltros() {
   if (selectFiltro) selectFiltro.addEventListener("change", aplicarFiltros);
 }
 
-// Formulario para añadir nivel
+// Formulario para añadir nivel con desplazamiento de posiciones
 function configurarFormulario() {
   const form = document.getElementById("form-nivel");
   if (!form) return;
@@ -189,23 +189,38 @@ function configurarFormulario() {
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const posInput = parseInt(document.getElementById("posicion").value);
+    // Si no pones posición, se coloca al final automáticamente
+    const posTarget = (!isNaN(posInput) && posInput > 0) ? posInput : (todosLosNiveles.length + 1);
+
+    // 🔄 DESPLAZAMIENTO AUTOMÁTICO:
+    // Si ya existe un nivel en esa posición o más abajo, les suma +1 a su posición.
+    todosLosNiveles.forEach(nivel => {
+      const posActual = nivel.position || nivel.posicion || 0;
+      if (posActual >= posTarget) {
+        if (nivel.position !== undefined) nivel.position = posActual + 1;
+        if (nivel.posicion !== undefined) nivel.posicion = posActual + 1;
+      }
+    });
+
     const nuevoNivel = {
       name: document.getElementById("nombre").value,
       creator: document.getElementById("creador").value,
       difficulty: document.getElementById("dificultad").value,
       progress: parseInt(document.getElementById("progreso").value) || 100,
-      position: parseInt(document.getElementById("posicion").value) || (todosLosNiveles.length + 1),
+      position: posTarget,
       players: document.getElementById("jugadores").value.split(",").map(j => j.trim()).filter(j => j !== "")
     };
 
     todosLosNiveles.push(nuevoNivel);
+    // Reordenamos la lista completa por posición
     todosLosNiveles.sort((a, b) => (a.position || a.posicion) - (b.position || b.posicion));
     
-    // 1. Renderizar en pantalla inmediatamente
+    // 1. Renderizar en pantalla los cambios inmediatamente
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
     
-    // 2. Guardar en la nube automáticamente
+    // 2. Guardar la nueva lista reordenada en la nube
     await guardarEnNube(todosLosNiveles);
     
     form.reset();
