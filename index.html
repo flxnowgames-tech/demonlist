@@ -4,16 +4,23 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demonlist Felix</title>
-  <link rel="stylesheet" href="styles-new.css?v=6">
-  <script src="script-new.js?v=6" defer></script>
+  <link rel="stylesheet" href="styles-new.css?v=7">
+  <script src="script-new.js?v=7" defer></script>
 </head>
 <body>
   <div class="container">
+    <!-- Barra Superior con Botón de Edición -->
+    <div class="top-bar">
+      <button id="btn-modo-edicion" class="btn-top-right">⚙️ Modo Edición</button>
+    </div>
+
+    <!-- Encabezado -->
     <header class="header">
-      <h1>Demonlist 67</h1>
+      <h1>Demonlist Felix</h1>
       <p>Tu progreso en Geometry Dash con diseño sci-fi, ranking y animaciones.</p>
     </header>
 
+    <!-- Buscador y Filtro -->
     <div class="controls">
       <input type="text" id="buscar" placeholder="Buscar nivel...">
       <select id="filtro-dificultad">
@@ -26,10 +33,11 @@
       </select>
     </div>
 
+    <!-- Tabla de Niveles -->
     <div class="table-container">
       <table id="tabla-niveles">
         <thead>
-          <tr>
+          <tr id="encabezado-tabla">
             <th>Posición</th>
             <th>Nivel</th>
             <th>Creador</th>
@@ -37,13 +45,16 @@
             <th>Progreso</th>
             <th>Jugadores</th>
             <th>Puntos</th>
+            <!-- La columna 'Acciones' aparecerá dinámicamente al activar Modo Edición -->
           </tr>
         </thead>
         <tbody id="lista-niveles">
-          </tbody>
+          <!-- Carga dinámicamente desde JSONBin.io -->
+        </tbody>
       </table>
     </div>
 
+    <!-- Tabla de Ranking de Jugadores -->
     <div class="table-container" style="margin-top: 40px;">
       <h2 style="margin-bottom: 15px; color: #00e5ff;">🏆 Ranking de Jugadores</h2>
       <table id="tabla-jugadores">
@@ -56,13 +67,18 @@
           </tr>
         </thead>
         <tbody id="lista-jugadores">
-          </tbody>
+          <!-- Carga dinámicamente -->
+        </tbody>
       </table>
     </div>
 
-    <div class="form-container" style="margin-top: 40px;">
-      <h2>Añadir nivel</h2>
+    <!-- Formulario para Añadir/Editar Nivel -->
+    <div class="form-container" style="margin-top: 40px;" id="seccion-formulario">
+      <h2 id="titulo-form">Añadir nivel</h2>
       <form id="form-nivel">
+        <!-- Campo oculto para saber si estamos editando -->
+        <input type="hidden" id="edit-index" value="-1">
+
         <input type="text" id="nombre" placeholder="Nombre del nivel" required>
         <input type="text" id="creador" placeholder="Creador" required>
         
@@ -78,7 +94,10 @@
         <input type="number" id="posicion" placeholder="Posición en la lista">
         <input type="text" id="jugadores" placeholder="Personas que se lo han pasado (separadas por comas)">
         
-        <button type="submit" id="btn-submit" style="background-color: #00e5ff; color: #000; font-weight: bold; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 4px; text-transform: uppercase; margin-top: 10px;">AÑADIR</button>
+        <div style="display: flex; gap: 10px;">
+          <button type="submit" id="btn-submit">AÑADIR</button>
+          <button type="button" id="btn-cancelar" style="display: none; background: #444; color: #fff; border: none; padding: 12px; border-radius: 4px; cursor: pointer;">CANCELAR</button>
+        </div>
       </form>
     </div>
   </div>
