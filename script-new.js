@@ -11,6 +11,9 @@ const PUNTOS_TIERLIST = {
   "Easy Demon": 10
 };
 
+let todosLosNiveles = [];
+let modoEdicionActivo = false;
+
 // Cálculo de puntos por nivel
 function calcularPuntos(dificultad, progreso) {
   const puntosBase = PUNTOS_TIERLIST[dificultad] || 0;
@@ -18,12 +21,11 @@ function calcularPuntos(dificultad, progreso) {
   return Math.round((porcentaje / 100) * puntosBase);
 }
 
-let todosLosNiveles = [];
-
 document.addEventListener("DOMContentLoaded", () => {
   cargarNiveles();
   configurarFiltros();
   configurarFormulario();
+  configurarBotonModoEdicion();
 });
 
 // Cargar niveles desde JSONBin.io (Nube)
@@ -60,7 +62,6 @@ async function guardarEnNube(nuevaLista) {
     });
 
     if (!response.ok) throw new Error("No se pudo guardar en la nube");
-    
     console.log("¡Guardado correctamente en la nube!");
   } catch (error) {
     console.error("Error guardando en la nube:", error);
@@ -68,10 +69,56 @@ async function guardarEnNube(nuevaLista) {
   }
 }
 
+// Botón arriba a la derecha para activar/desactivar la edición
+function configurarBotonModoEdicion() {
+  const btnModo = document.getElementById("btn-modo-edicion");
+  if (!btnModo) return;
+
+  btnModo.addEventListener("click", () => {
+    modoEdicionActivo = !modoEdicionActivo;
+
+    if (modoEdicionActivo) {
+      btnModo.textContent = "✖️ Salir de Edición";
+      btnModo.classList.add("activo");
+    } else {
+      btnModo.textContent = "⚙️ Modo Edición";
+      btnModo.classList.remove("activo");
+      cancelarEdicion();
+    }
+
+    renderizarTablaNiveles(todosLosNiveles);
+  });
+}
+
 // 1. Renderizar la Tabla de Niveles
 function renderizarTablaNiveles(niveles) {
   const tbody = document.getElementById("lista-niveles");
-  if (!tbody) return;
+  const trHeader = document.getElementById("encabezado-tabla");
+  if (!tbody || !trHeader) return;
+
+  // Ajustar encabezado según si la edición está activa
+  if (modoEdicionActivo) {
+    trHeader.innerHTML = `
+      <th>Posición</th>
+      <th>Nivel</th>
+      <th>Creador</th>
+      <th>Dificultad</th>
+      <th>Progreso</th>
+      <th>Jugadores</th>
+      <th>Puntos</th>
+      <th>Acciones</th>
+    `;
+  } else {
+    trHeader.innerHTML = `
+      <th>Posición</th>
+      <th>Nivel</th>
+      <th>Creador</th>
+      <th>Dificultad</th>
+      <th>Progreso</th>
+      <th>Jugadores</th>
+      <th>Puntos</th>
+    `;
+  }
 
   tbody.innerHTML = "";
 
@@ -83,15 +130,13 @@ function renderizarTablaNiveles(niveles) {
     const posicion = nivel.position || nivel.posicion || (index + 1);
     const jugadores = nivel.players || nivel.jugadores || [];
 
-    const puntos = nivel.puntos !== undefined 
-      ? nivel.puntos 
-      : calcularPuntos(dificultad, progreso);
-
+    const puntos = nivel.puntos !== undefined ? nivel.puntos : calcularPuntos(dificultad, progreso);
     const listaJugadores = Array.isArray(jugadores) ? jugadores.join(", ") : jugadores;
     const claseBadge = dificultad.toLowerCase().replace(/\s+/g, '-');
 
     const tr = document.createElement("tr");
-    tr.innerHTML = `
+
+    let contenidoFila = `
       <td>${posicion}</td>
       <td><strong>${nombre}</strong></td>
       <td>${creador}</td>
@@ -100,11 +145,84 @@ function renderizarTablaNiveles(niveles) {
       <td>${listaJugadores}</td>
       <td><strong style="color: #00e5ff;">+${puntos} pts</strong></td>
     `;
+
+    if (modoEdicionActivo) {
+      contenidoFila += `
+        <td>
+          <button class="btn-accion btn-editar" onclick="prepararEdicion(${index})">✏️</button>
+          <button class="btn-accion btn-eliminar" onclick="eliminarNivel(${index})">🗑️</button>
+        </td>
+      `;
+    }
+
+    tr.innerHTML = contenidoFila;
     tbody.appendChild(tr);
   });
 }
 
-// 2. Calcular y Renderizar el Ranking de Jugadores
+// Preparar formulario para editar un nivel existente
+window.prepararEdicion = function(index) {
+  const nivel = todosLosNiveles[index];
+  if (!nivel) return;
+
+  document.getElementById("edit-index").value = index;
+  document.getElementById("nombre").value = nivel.name || nivel.nombre || "";
+  document.getElementById("creador").value = nivel.creator || nivel.creador || "";
+  document.getElementById("dificultad").value = nivel.difficulty || nivel.dificultad || "Easy Demon";
+  document.getElementById("progreso").value = nivel.progress !== undefined ? nivel.progress : (nivel.progreso || 100);
+  document.getElementById("posicion").value = nivel.position || nivel.posicion || (index + 1);
+
+  const jugadores = nivel.players || nivel.jugadores || [];
+  document.getElementById("jugadores").value = Array.isArray(jugadores) ? jugadores.join(", ") : jugadores;
+
+  // Cambiar estilo e interfaz del formulario
+  document.getElementById("titulo-form").textContent = "✏️ Editar Nivel";
+  const btnSubmit = document.getElementById("btn-submit");
+  btnSubmit.textContent = "GUARDAR CAMBIOS";
+  btnSubmit.style.backgroundColor = "#ff9800"; // Naranja para distinguir edición
+  
+  document.getElementById("btn-cancelar").style.display = "inline-block";
+
+  // Hacer scroll suave hacia el formulario
+  document.getElementById("seccion-formulario").scrollIntoView({ behavior: 'smooth' });
+};
+
+// Cancelar edición
+function cancelarEdicion() {
+  document.getElementById("form-nivel").reset();
+  document.getElementById("edit-index").value = "-1";
+  document.getElementById("titulo-form").textContent = "Añadir nivel";
+
+  const btnSubmit = document.getElementById("btn-submit");
+  btnSubmit.textContent = "AÑADIR";
+  btnSubmit.style.backgroundColor = "#00e5ff";
+
+  document.getElementById("btn-cancelar").style.display = "none";
+}
+
+// Eliminar nivel
+window.eliminarNivel = async function(index) {
+  const nivel = todosLosNiveles[index];
+  const nombre = nivel ? (nivel.name || nivel.nombre) : "este nivel";
+
+  if (confirm(`¿Seguro que deseas eliminar "${nombre}"?`)) {
+    // Eliminar el elemento
+    todosLosNiveles.splice(index, 1);
+
+    // Reajustar posiciones consecutivas (1, 2, 3...)
+    todosLosNiveles.forEach((n, idx) => {
+      if (n.position !== undefined) n.position = idx + 1;
+      if (n.posicion !== undefined) n.posicion = idx + 1;
+    });
+
+    renderizarTablaNiveles(todosLosNiveles);
+    renderizarRankingJugadores(todosLosNiveles);
+
+    await guardarEnNube(todosLosNiveles);
+  }
+};
+
+// Renderizar Ranking de Jugadores
 function renderizarRankingJugadores(niveles) {
   const tbodyJugadores = document.getElementById("lista-jugadores");
   if (!tbodyJugadores) return;
@@ -154,7 +272,7 @@ function renderizarRankingJugadores(niveles) {
   });
 }
 
-// Filtros de búsqueda
+// Filtros
 function configurarFiltros() {
   const inputBuscar = document.getElementById("buscar");
   const selectFiltro = document.getElementById("filtro-dificultad");
@@ -181,29 +299,25 @@ function configurarFiltros() {
   if (selectFiltro) selectFiltro.addEventListener("change", aplicarFiltros);
 }
 
-// Formulario para añadir nivel con desplazamiento de posiciones
+// Formulario submit (Añadir o Editar)
 function configurarFormulario() {
   const form = document.getElementById("form-nivel");
+  const btnCancelar = document.getElementById("btn-cancelar");
+
+  if (btnCancelar) {
+    btnCancelar.addEventListener("click", cancelarEdicion);
+  }
+
   if (!form) return;
 
   form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
+    const editIndex = parseInt(document.getElementById("edit-index").value);
     const posInput = parseInt(document.getElementById("posicion").value);
-    // Si no pones posición, se coloca al final automáticamente
     const posTarget = (!isNaN(posInput) && posInput > 0) ? posInput : (todosLosNiveles.length + 1);
 
-    // 🔄 DESPLAZAMIENTO AUTOMÁTICO:
-    // Si ya existe un nivel en esa posición o más abajo, les suma +1 a su posición.
-    todosLosNiveles.forEach(nivel => {
-      const posActual = nivel.position || nivel.posicion || 0;
-      if (posActual >= posTarget) {
-        if (nivel.position !== undefined) nivel.position = posActual + 1;
-        if (nivel.posicion !== undefined) nivel.posicion = posActual + 1;
-      }
-    });
-
-    const nuevoNivel = {
+    const datosNivel = {
       name: document.getElementById("nombre").value,
       creator: document.getElementById("creador").value,
       difficulty: document.getElementById("dificultad").value,
@@ -212,17 +326,30 @@ function configurarFormulario() {
       players: document.getElementById("jugadores").value.split(",").map(j => j.trim()).filter(j => j !== "")
     };
 
-    todosLosNiveles.push(nuevoNivel);
-    // Reordenamos la lista completa por posición
+    if (editIndex >= 0) {
+      // MODO EDICIÓN: reemplazar datos existentes
+      todosLosNiveles[editIndex] = datosNivel;
+    } else {
+      // MODO AÑADIR: Desplazar los niveles existentes de esa posición hacia abajo (+1)
+      todosLosNiveles.forEach(nivel => {
+        const posActual = nivel.position || nivel.posicion || 0;
+        if (posActual >= posTarget) {
+          if (nivel.position !== undefined) nivel.position = posActual + 1;
+          if (nivel.posicion !== undefined) nivel.posicion = posActual + 1;
+        }
+      });
+
+      todosLosNiveles.push(datosNivel);
+    }
+
+    // Reordenar por posición
     todosLosNiveles.sort((a, b) => (a.position || a.posicion) - (b.position || b.posicion));
-    
-    // 1. Renderizar en pantalla los cambios inmediatamente
+
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
-    
-    // 2. Guardar la nueva lista reordenada en la nube
+
     await guardarEnNube(todosLosNiveles);
-    
-    form.reset();
+
+    cancelarEdicion();
   });
 }
