@@ -4,18 +4,16 @@
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1.0">
   <title>Demonlist Felix</title>
-  <link rel="stylesheet" href="styles-new.css?v=5">
-  <script src="script-new.js?v=5" defer></script>
+  <link rel="stylesheet" href="styles-new.css?v=6">
+  <script src="script-new.js?v=6" defer></script>
 </head>
 <body>
   <div class="container">
-    <!-- Encabezado -->
     <header class="header">
       <h1>Demonlist Felix</h1>
       <p>Tu progreso en Geometry Dash con diseño sci-fi, ranking y animaciones.</p>
     </header>
 
-    <!-- Buscador y Filtro -->
     <div class="controls">
       <input type="text" id="buscar" placeholder="Buscar nivel...">
       <select id="filtro-dificultad">
@@ -28,7 +26,6 @@
       </select>
     </div>
 
-    <!-- Tabla de Niveles -->
     <div class="table-container">
       <table id="tabla-niveles">
         <thead>
@@ -43,12 +40,10 @@
           </tr>
         </thead>
         <tbody id="lista-niveles">
-          <!-- Carga dinámicamente desde levels-new.json -->
-        </tbody>
+          </tbody>
       </table>
     </div>
 
-    <!-- Tabla de Ranking de Jugadores -->
     <div class="table-container" style="margin-top: 40px;">
       <h2 style="margin-bottom: 15px; color: #00e5ff;">🏆 Ranking de Jugadores</h2>
       <table id="tabla-jugadores">
@@ -61,12 +56,10 @@
           </tr>
         </thead>
         <tbody id="lista-jugadores">
-          <!-- Carga dinámicamente la suma de puntos por jugador -->
-        </tbody>
+          </tbody>
       </table>
     </div>
 
-    <!-- Formulario para Añadir Nivel -->
     <div class="form-container" style="margin-top: 40px;">
       <h2>Añadir nivel</h2>
       <form id="form-nivel">
@@ -85,10 +78,7 @@
         <input type="number" id="posicion" placeholder="Posición en la lista">
         <input type="text" id="jugadores" placeholder="Personas que se lo han pasado (separadas por comas)">
         
-        <div style="display: flex; gap: 10px; margin-top: 10px;">
-          <button type="submit" id="btn-submit" style="flex: 1;">AÑADIR</button>
-          <button type="button" id="btn-exportar" style="flex: 1; background-color: #00e5ff; color: #000; font-weight: bold; border: none; padding: 12px; cursor: pointer; border-radius: 4px; text-transform: uppercase;">EXPORTAR JSON</button>
-        </div>
+        <button type="submit" id="btn-submit" style="background-color: #00e5ff; color: #000; font-weight: bold; border: none; padding: 12px; width: 100%; cursor: pointer; border-radius: 4px; text-transform: uppercase; margin-top: 10px;">AÑADIR</button>
       </form>
     </div>
   </div>
