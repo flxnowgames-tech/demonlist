@@ -1,3 +1,7 @@
+// Configuración de JSONBin.io con tus claves reales
+const BIN_ID = "6a994acdf5f4af5e2964e2e4";
+const MASTER_KEY = "$2a$10$L3EwXJA5bVnItMjuEeGuiO2i0UvTltIS2YGBm7VsUVY8st/yX66lW";
+
 // Tabla / Sistema de Tierlist de Puntos
 const PUNTOS_TIERLIST = {
   "Extreme Demon": 100,
@@ -20,21 +24,47 @@ document.addEventListener("DOMContentLoaded", () => {
   cargarNiveles();
   configurarFiltros();
   configurarFormulario();
-  configurarExportarJSON();
 });
 
-// Cargar niveles desde JSON
+// Cargar niveles desde JSONBin.io (Nube)
 async function cargarNiveles() {
   try {
-    const response = await fetch('./levels-new.json?v=' + Date.now());
-    if (!response.ok) throw new Error("No se pudo cargar el archivo JSON");
-    
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}/latest`, {
+      headers: {
+        "X-Master-Key": MASTER_KEY,
+        "X-Bin-Meta": "false" // Devuelve el JSON de niveles sin metadatos
+      }
+    });
+
+    if (!response.ok) throw new Error("Error al cargar datos desde la nube");
+
     todosLosNiveles = await response.json();
-    
+
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
   } catch (error) {
-    console.error("Error cargando los niveles:", error);
+    console.error("Error en JSONBin:", error);
+  }
+}
+
+// Guardar lista actualizada en la nube de JSONBin.io
+async function guardarEnNube(nuevaLista) {
+  try {
+    const response = await fetch(`https://api.jsonbin.io/v3/b/${BIN_ID}`, {
+      method: "PUT",
+      headers: {
+        "Content-Type": "application/json",
+        "X-Master-Key": MASTER_KEY
+      },
+      body: JSON.stringify(nuevaLista)
+    });
+
+    if (!response.ok) throw new Error("No se pudo guardar en la nube");
+    
+    console.log("¡Guardado correctamente en la nube!");
+  } catch (error) {
+    console.error("Error guardando en la nube:", error);
+    alert("Hubo un error guardando el nivel en la nube.");
   }
 }
 
@@ -151,12 +181,12 @@ function configurarFiltros() {
   if (selectFiltro) selectFiltro.addEventListener("change", aplicarFiltros);
 }
 
-// Formulario para añadir nivel a la tabla activa
+// Formulario para añadir nivel
 function configurarFormulario() {
   const form = document.getElementById("form-nivel");
   if (!form) return;
 
-  form.addEventListener("submit", (e) => {
+  form.addEventListener("submit", async (e) => {
     e.preventDefault();
 
     const nuevoNivel = {
@@ -171,30 +201,13 @@ function configurarFormulario() {
     todosLosNiveles.push(nuevoNivel);
     todosLosNiveles.sort((a, b) => (a.position || a.posicion) - (b.position || b.posicion));
     
-    // Actualizar ambas tablas en pantalla
+    // 1. Renderizar en pantalla inmediatamente
     renderizarTablaNiveles(todosLosNiveles);
     renderizarRankingJugadores(todosLosNiveles);
     
-    form.reset();
-  });
-}
-
-// Función independiente para exportar/descargar el JSON en cualquier momento
-function configurarExportarJSON() {
-  const btnExportar = document.getElementById("btn-exportar");
-  if (!btnExportar) return;
-
-  btnExportar.addEventListener("click", () => {
-    const jsonStr = JSON.stringify(todosLosNiveles, null, 2);
-    const blob = new Blob([jsonStr], { type: "application/json" });
-    const url = URL.createObjectURL(blob);
+    // 2. Guardar en la nube automáticamente
+    await guardarEnNube(todosLosNiveles);
     
-    const a = document.createElement("a");
-    a.href = url;
-    a.download = "levels-new.json";
-    document.body.appendChild(a);
-    a.click();
-    document.body.removeChild(a);
-    URL.revokeObjectURL(url);
+    form.reset();
   });
 }
