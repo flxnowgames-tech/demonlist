@@ -17,6 +17,40 @@ body {
 .container {
   width: 100%;
   max-width: 900px;
+  position: relative;
+}
+
+/* Barra Superior y Botón de Edición (Arriba a la derecha) */
+.top-bar {
+  display: flex;
+  justify-content: flex-end;
+  margin-bottom: 10px;
+}
+
+.btn-top-right {
+  background-color: #161925;
+  color: #00e5ff;
+  border: 1px solid #00e5ff;
+  padding: 8px 16px;
+  border-radius: 20px;
+  font-weight: bold;
+  font-size: 0.85rem;
+  cursor: pointer;
+  transition: all 0.3s ease;
+  box-shadow: 0 0 10px rgba(0, 229, 255, 0.2);
+}
+
+.btn-top-right:hover {
+  background-color: #00e5ff;
+  color: #000;
+  box-shadow: 0 0 15px rgba(0, 229, 255, 0.6);
+}
+
+.btn-top-right.activo {
+  background-color: #f44336;
+  color: #fff;
+  border-color: #f44336;
+  box-shadow: 0 0 10px rgba(244, 67, 54, 0.4);
 }
 
 /* Encabezado */
@@ -94,6 +128,25 @@ th {
 
 tr:hover {
   background-color: #171b2a;
+}
+
+/* Botones de Acción en las filas */
+.btn-accion {
+  border: none;
+  background: transparent;
+  font-size: 1.1rem;
+  cursor: pointer;
+  padding: 4px 8px;
+  border-radius: 4px;
+  transition: background 0.2s ease;
+}
+
+.btn-editar:hover {
+  background-color: rgba(255, 152, 0, 0.2);
+}
+
+.btn-eliminar:hover {
+  background-color: rgba(244, 67, 54, 0.2);
 }
 
 /* Insignias de Dificultad (Badges) */
@@ -174,10 +227,10 @@ tr:hover {
   outline: none;
 }
 
-/* Botón AÑADIR con estilo cyan neón */
 #btn-submit {
-  background-color: #00e5ff !important;
-  color: #000 !important;
+  flex: 1;
+  background-color: #00e5ff;
+  color: #000;
   font-weight: bold;
   font-size: 1rem;
   letter-spacing: 1px;
@@ -190,12 +243,7 @@ tr:hover {
 }
 
 #btn-submit:hover {
-  background-color: #00b3cc !important;
+  filter: brightness(1.1);
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.7);
   transform: translateY(-2px);
-}
-
-#btn-submit:active {
-  transform: translateY(0);
-}
 }
