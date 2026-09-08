@@ -102,7 +102,8 @@ body {
   background-color: #121420;
   border: 1px solid #202538;
   border-radius: 8px;
-  overflow-x: auto;
+  overflow-x: auto; /* Permite desplazamiento horizontal fluido en pantallas pequeñas */
+  -webkit-overflow-scrolling: touch;
   box-shadow: 0 4px 20px rgba(0, 0, 0, 0.4);
 }
 
@@ -110,6 +111,7 @@ table {
   width: 100%;
   border-collapse: collapse;
   text-align: left;
+  white-space: nowrap; /* Evita que el texto de las celdas se rompa feo en móviles */
 }
 
 th, td {
@@ -130,7 +132,7 @@ tr:hover {
   background-color: #171b2a;
 }
 
-/* 🎮 Estilos de Paginación GD */
+/* Paginación GD */
 .pagination-container {
   display: flex;
   justify-content: center;
@@ -143,8 +145,8 @@ tr:hover {
   background-color: #161925;
   color: #00e5ff;
   border: 1px solid #00e5ff;
-  width: 40px;
-  height: 40px;
+  width: 42px;
+  height: 42px;
   border-radius: 8px;
   font-size: 1.2rem;
   cursor: pointer;
@@ -197,20 +199,19 @@ tr:hover {
   box-shadow: 0 0 8px rgba(0, 229, 255, 0.5);
 }
 
-/* Ocultar flechitas por defecto en inputs number */
 .page-selector input::-webkit-outer-spin-button,
 .page-selector input::-webkit-inner-spin-button {
   -webkit-appearance: none;
   margin: 0;
 }
 
-/* Botones de Acción en las filas */
+/* Botones de Acción */
 .btn-accion {
   border: none;
   background: transparent;
-  font-size: 1.1rem;
+  font-size: 1.2rem;
   cursor: pointer;
-  padding: 4px 8px;
+  padding: 6px 10px;
   border-radius: 4px;
   transition: background 0.2s ease;
 }
@@ -223,7 +224,7 @@ tr:hover {
   background-color: rgba(244, 67, 54, 0.2);
 }
 
-/* Insignias de Dificultad (Badges) */
+/* Badges */
 .badge {
   padding: 4px 8px;
   border-radius: 4px;
@@ -292,7 +293,7 @@ tr:hover {
   border: 1px solid #2a2f45;
   border-radius: 6px;
   color: #fff;
-  font-size: 0.95rem;
+  font-size: 16px; /* Evita zoom automático molesto en iOS/Safari al hacer tap */
 }
 
 .form-container input:focus,
@@ -319,5 +320,66 @@ tr:hover {
 #btn-submit:hover {
   filter: brightness(1.1);
   box-shadow: 0 0 20px rgba(0, 229, 255, 0.7);
-  transform: translateY(-2px);
+}
+
+/* =======================================================
+   📱 ADAPTACIÓN ESPECÍFICA PARA PANTALLAS PEQUEÑAS (MÓVILES)
+   ======================================================= */
+@media (max-width: 600px) {
+  body {
+    padding: 10px; /* Menos márgenes laterales */
+  }
+
+  .header h1 {
+    font-size: 1.8rem; /* Título adaptado */
+  }
+
+  .header p {
+    font-size: 0.85rem;
+  }
+
+  /* Los controles de búsqueda se apilan verticalmente */
+  .controls {
+    flex-direction: column;
+    gap: 10px;
+  }
+
+  .controls input,
+  .controls select {
+    width: 100%;
+    min-width: 0;
+    font-size: 16px; /* Previene el auto-zoom en iPhone */
+  }
+
+  /* Celdas de la tabla más compactas */
+  th, td {
+    padding: 10px 12px;
+    font-size: 0.85rem;
+  }
+
+  /* Ajustes en la paginación para que no sobresalga */
+  .pagination-container {
+    gap: 10px;
+  }
+
+  .btn-pagina {
+    width: 38px;
+    height: 38px;
+    font-size: 1rem;
+  }
+
+  .page-selector {
+    padding: 4px 10px;
+    font-size: 0.85rem;
+  }
+
+  .page-selector input {
+    width: 42px;
+    padding: 4px;
+  }
+
+  /* Formulario compacto */
+  .form-container {
+    padding: 15px;
+  }
 }
