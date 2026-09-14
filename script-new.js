@@ -1,12 +1,14 @@
 const BIN_ID = "6a994acdf5f4af5e2964e2e4";
 const MASTER_KEY = "$2a$10$L3EwXJA5bVnItMjuEeGuiO2i0UvTltIS2YGBm7VsUVY8st/yX66lW";
 
+// 🏆 PUNTOS BASE (al 100%) POR DIFICULTAD
+// Al poner Easy Demon en 20 pts, un 50% dará exactamente 10 pts.
 const PUNTOS_TIERLIST = {
-  "Extreme Demon": 100,
-  "Insane Demon": 75,
-  "Hard Demon": 50,
-  "Medium Demon": 25,
-  "Easy Demon": 10
+  "Easy Demon": 20,      // 50% = 10 pts | 100% = 20 pts
+  "Medium Demon": 40,    // 50% = 20 pts | 100% = 40 pts
+  "Hard Demon": 80,      // 50% = 40 pts | 100% = 80 pts
+  "Insane Demon": 150,   // 50% = 75 pts | 100% = 150 pts
+  "Extreme Demon": 300   // 50% = 150 pts | 100% = 300 pts
 };
 
 let todosLosNiveles = [];
@@ -17,9 +19,12 @@ let modoEdicionActivo = false;
 let paginaActual = 1;
 const NIVELES_POR_PAGINA = 10;
 
+// 🧮 CÁLCULO DE PUNTOS PROPORCIONAL AL PROGRESO
 function calcularPuntos(dificultad, progreso) {
   const puntosBase = PUNTOS_TIERLIST[dificultad] || 0;
   const porcentaje = parseFloat(progreso) || 100;
+  
+  // Fórmula: (Porcentaje / 100) * Puntos Base de la dificultad
   return Math.round((porcentaje / 100) * puntosBase);
 }
 
@@ -72,7 +77,7 @@ async function guardarEnNube(nuevaLista) {
   }
 }
 
-// 🕹️ Configuración de los Controles de Paginación
+// Controles de Paginación
 function configurarPaginacion() {
   const btnPrev = document.getElementById("btn-prev");
   const btnNext = document.getElementById("btn-next");
@@ -93,7 +98,6 @@ function configurarPaginacion() {
     }
   });
 
-  // Ir a una página escribiendo en el recuadro
   inputPagina.addEventListener("change", () => {
     let nuevaPagina = parseInt(inputPagina.value);
     const totalPaginas = Math.ceil(nivelesFiltradosActuales.length / NIVELES_POR_PAGINA) || 1;
@@ -117,24 +121,19 @@ function renderizarTablaNiveles() {
 
   if (!tbody || !trHeader) return;
 
-  // Calcular páginas totales
   const totalPaginas = Math.ceil(nivelesFiltradosActuales.length / NIVELES_POR_PAGINA) || 1;
 
-  // Ajustar si la página actual excede el total
   if (paginaActual > totalPaginas) paginaActual = totalPaginas;
 
-  // Actualizar UI de Paginación
   inputPagina.value = paginaActual;
   txtTotalPaginas.textContent = `/ ${totalPaginas}`;
   btnPrev.disabled = (paginaActual === 1);
   btnNext.disabled = (paginaActual === totalPaginas);
 
-  // Obtener solo los 10 niveles de la página actual
   const inicio = (paginaActual - 1) * NIVELES_POR_PAGINA;
   const fin = inicio + NIVELES_POR_PAGINA;
   const nivelesPagina = nivelesFiltradosActuales.slice(inicio, fin);
 
-  // Encabezado
   trHeader.innerHTML = `
     <th>Posición</th>
     <th>Nivel</th>
@@ -154,7 +153,6 @@ function renderizarTablaNiveles() {
   }
 
   nivelesPagina.forEach((nivel) => {
-    // Buscar el índice original para edición/eliminación
     const indexOriginal = todosLosNiveles.indexOf(nivel);
 
     const nombre = nivel.name || nivel.nombre || "Sin nombre";
@@ -164,7 +162,8 @@ function renderizarTablaNiveles() {
     const posicion = nivel.position || nivel.posicion || (indexOriginal + 1);
     const jugadores = nivel.players || nivel.jugadores || [];
 
-    const puntos = nivel.puntos !== undefined ? nivel.puntos : calcularPuntos(dificultad, progreso);
+    // Se recalculan los puntos usando el progreso dinámico
+    const puntos = calcularPuntos(dificultad, progreso);
     const listaJugadores = Array.isArray(jugadores) ? jugadores.join(", ") : jugadores;
     const claseBadge = dificultad.toLowerCase().replace(/\s+/g, '-');
 
@@ -194,7 +193,7 @@ function renderizarTablaNiveles() {
   });
 }
 
-// Configurar Filtros (resetea a Página 1 al buscar)
+// Configurar Filtros
 function configurarFiltros() {
   const inputBuscar = document.getElementById("buscar");
   const selectFiltro = document.getElementById("filtro-dificultad");
@@ -214,7 +213,7 @@ function configurarFiltros() {
       return coincideTexto && coincideDificultad;
     });
 
-    paginaActual = 1; // Volver a la primera página al filtrar
+    paginaActual = 1;
     renderizarTablaNiveles();
   }
 
@@ -313,7 +312,7 @@ function renderizarRankingJugadores(niveles) {
   niveles.forEach(nivel => {
     const dificultad = nivel.difficulty || nivel.dificultad || "Easy Demon";
     const progreso = nivel.progress !== undefined ? nivel.progress : (nivel.progreso !== undefined ? nivel.progreso : 100);
-    const puntosNivel = nivel.puntos !== undefined ? nivel.puntos : calcularPuntos(dificultad, progreso);
+    const puntosNivel = calcularPuntos(dificultad, progreso);
     const jugadores = nivel.players || nivel.jugadores || [];
 
     const lista = Array.isArray(jugadores) 
@@ -346,7 +345,7 @@ function renderizarRankingJugadores(niveles) {
     tr.innerHTML = `
       <td><strong>#${index + 1}</strong></td>
       <td><strong style="color: #fff;">${jugador.nombre}</strong></td>
-      <td>${jugador.nivelesCompletados} nivel(es)</td>
+      <td>${jugador.nivelesCompletados} récord(s)</td>
       <td><strong style="color: #00e5ff;">${jugador.puntosTotales} pts</strong></td>
     `;
     tbodyJugadores.appendChild(tr);
@@ -380,7 +379,6 @@ function configurarFormulario() {
     if (editIndex >= 0) {
       todosLosNiveles[editIndex] = datosNivel;
     } else {
-      // Desplazar niveles existentes hacia abajo
       todosLosNiveles.forEach(nivel => {
         const posActual = nivel.position || nivel.posicion || 0;
         if (posActual >= posTarget) {
@@ -395,7 +393,6 @@ function configurarFormulario() {
     todosLosNiveles.sort((a, b) => (a.position || a.posicion) - (b.position || b.posicion));
     nivelesFiltradosActuales = [...todosLosNiveles];
 
-    // Ir automáticamente a la página donde quedó el nuevo nivel
     paginaActual = Math.ceil(posTarget / NIVELES_POR_PAGINA);
 
     renderizarTablaNiveles();
